@@ -35,8 +35,14 @@ def search_track():
     vim.command("let user_input = inputdialog('Select a track number: ')")
     vim.command("call inputrestore()")
     vim.command("echo '\n'")
-    track_num = int(vim.eval("user_input"))
 
+    try:
+        track_num = int(vim.eval("user_input"))
+    except:
+        print "%s is not a valid selection!" % vim.eval("user_input")
+        return
+
+    # Play the track
     selected_item = items_list[track_num]
     print "Playing %s by %s..." % (selected_item["name"], selected_item["artists"][0]["name"])
     play_spotify_track(selected_item["uri"])
