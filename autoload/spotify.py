@@ -15,7 +15,7 @@ def search_track():
     track_name = vim.eval("user_input")
 
     # Send the request
-    request_url = "%s?query=%s&type=track&" % (API_URL, track_name)
+    request_url = "%s?query=%s&type=track&limit=50" % (API_URL, track_name)
     try:
         response_content = requests.get(request_url, timeout = TIMEOUT).json()
     except requests.exceptions.Timeout as Timeout:
