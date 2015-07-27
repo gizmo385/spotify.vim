@@ -3,7 +3,7 @@ if !has("python")
     finish
 end
 
-pyfile ./src/spotify.py
+pyfile ./autoload/spotify.py
 
 function! spotify#next_song()
     python next_song()
