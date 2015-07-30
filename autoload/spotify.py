@@ -17,11 +17,14 @@ def _user_input(message, variable_name):
 
 def search_spotify(type="track", limit=20):
     # Get the user's input
-    track_name = _user_input("Enter the {type} name: ".format(type=type), "track_name")
+    query = _user_input("Enter the {type} name: ".format(type=type), "query")
+
+    if not query:
+        return
 
     # Send the request
     request_url = "{url}?query={query}&type={type}&limit={limit}"
-    request_url = request_url.format(url=API_URL, query=track_name, type=type, limit=limit)
+    request_url = request_url.format(url=API_URL, query=query, type=type, limit=limit)
 
     try:
         response_content = requests.get(request_url, timeout = TIMEOUT).json()
@@ -42,6 +45,9 @@ def search_spotify(type="track", limit=20):
 
     # Get the selected item
     item_num = _user_input("Select a {type} number: ".format(type = type), "item_num")
+
+    if not item_num:
+        return
 
     try:
         item_num = int(item_num)
