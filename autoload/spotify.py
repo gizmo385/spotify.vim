@@ -1,10 +1,20 @@
 import requests
 import vim
-import subprocess
 import pprint
+import os
+
+from sys import platform, exit
 
 API_URL = "https://api.spotify.com/v1/search"
 TIMEOUT = 10
+
+# Command keys
+PLAY_URI = "playUri"
+NEXT_SONG = "nextSong"
+PREVIOUS_SONG = "previousSong"
+PLAY_PAUSE = "playPause"
+
+commands = {k: None for k in [PLAY_URI, NEXT_SONG, PREVIOUS_SONG, PLAY_PAUSE]}
 
 def _user_input(message, variable_name):
     input_command = "let {variable_name} = inputdialog('{message}')"
@@ -58,7 +68,7 @@ def search_spotify(type="track", limit=20):
     # Play the track
     selected_item = items[item_num]
     print "Playing %s" % selected_item["name"]
-    play_uri(selected_item["uri"])
+    play_uri('"{item}"'.format(item=selected_item["uri"]))
 
 def _parse_tracks(tracks):
     for track_number, track in enumerate(tracks):
@@ -73,29 +83,61 @@ def _parse_albums(albums):
         print "%d: %s" % (album_number, album["name"])
 
 def shell_command(*args):
-    return subprocess.check_output(list(args))
+    return os.system(" ".join(args))
 
-def spotify_command(command, *args):
-    print "dbus-send --dest=org.mpris.MediaPlayer2.spotify --print-reply /org/mpris/MediaPlayer2 %s %s" % (command, " ".join(args))
-    x = shell_command("dbus-send",
-            "--dest=org.mpris.MediaPlayer2.spotify",
-            "--print-reply",
-            "/org/mpris/MediaPlayer2",
-            command,
-            *args)
+def osascript_command(command, *args):
+    command_string = "'tell application \"Spotify\" to {command}".format(command=command)
+    if args:
+        command_string = "{command_string} {args}'".format(command_string=command_string,
+                                                           args=" ".join(args))
+    else:
+        command_string += "'"
+
+    shell_command("osascript", "-e", command_string)
+
+def dbus_command(command, *args):
+    shell_command("dbus-send", "--dest=org.mpris.MediaPlayer2.spotify",
+                  "--print-reply", "/org/mpris/MediaPlayer2", command, *args)
 
 def pause_unpause():
     """Toggles between paused and unpaused"""
-    spotify_command("org.mpris.MediaPlayer2.Player.PlayPause")
+    spotify_command(commands[PLAY_PAUSE])
 
 def next_song():
     """Skips to the next track"""
-    spotify_command("org.mpris.MediaPlayer2.Player.Next")
+    spotify_command(commands[NEXT_SONG])
 
 def previous_song():
     """Moves to the previous track"""
-    spotify_command("org.mpris.MediaPlayer2.Player.Previous")
+    spotify_command(commands[PREVIOUS_SONG])
 
 def play_uri(uri):
     """Plays the song that with the provided URI"""
-    spotify_command("org.mpris.MediaPlayer2.Player.OpenUri", "string:%s" % uri)
+    if platform == "darwin":
+        spotify_command(commands[PLAY_URI], uri)
+    elif platform in ["linux", "linux2"]:
+        spotify_command(commands[PLAY_URI], "string:%s" % uri)
+    else:
+        print "Your platform is invalid!"
+        exit(1)
+
+# Set the commands based on what platform this is running on
+if platform == "win32":  # Windows
+    print "This plugin requires OSX or Linux!"
+    exit(1)
+elif platform == "darwin":  # OSX
+    commands = {
+        PLAY_URI: "play track",
+        NEXT_SONG: "next track",
+        PREVIOUS_SONG: "previous track",
+        PLAY_PAUSE: "playpause"
+    }
+    spotify_command = osascript_command
+elif platform in ["linux", "linux2"]:  # Linux
+    commands = {
+        PLAY_URI: "org.mpris.MediaPlayer2.Player.OpenUri",
+        NEXT_SONG: "org.mpris.MediaPlayer2.Player.Next",
+        PREVIOUS_SONG: "org.mpris.MediaPlayer2.Player.Previous",
+        PLAY_PAUSE: "org.mpris.MediaPlayer2.Player.PlayPause"
+    }
+    spotify_command = dbus_command
