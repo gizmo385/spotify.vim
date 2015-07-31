@@ -1,7 +1,11 @@
-if (exists('g:spotify_disable') || exists('loaded_spotify') || &cp)
+if !has("python")
+    print "You need Python!"
     finish
-endif
-let loaded_spotify = 1
+end
+
+" Load the python code
+let s:plugin_path = escape(expand('<sfile>:p:h'), '\')
+exe 'pyfile ' . s:plugin_path . '/spotify.py'
 
 " Bindings
 command! Track              exec 'python search_spotify(type = "track")'
