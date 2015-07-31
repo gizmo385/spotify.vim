@@ -28,9 +28,10 @@ def _user_input(message, variable_name):
     except:
         return None
 
-def search_spotify(type="track", limit=20):
-    # Get the user's input
+def search_spotify(type="track"):
+    # Get the user's input and script settings
     query = _user_input("Enter the {type} name: ".format(type=type), "query")
+    limit = vim.eval("g:spotify_limit")
 
     if not query:
         return
