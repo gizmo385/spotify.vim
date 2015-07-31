@@ -1,0 +1,57 @@
+*spotify.txt*   Control Spotify from your editor
+
+Making it easier to control your music without breaking your concentration
+
+==============================================================================
+CONTENTS                                                      *Spotify-contents*
+
+    1. Intro ........................... |SpotifyIntro|
+    2. Usage ........................... |SpotifyUsage|
+    3. Configuration ................... |SpotifyConfig|
+        3.1  spotify_limit.............. |spotify_limit|
+    4. Contributing .................... |SpotifyContributing|
+
+==============================================================================
+1. Intro                                                          *SpotifyIntro*
+
+spotify.vim hooks into  the Spotify desktop application by using either
+osascript or dbus and allows you to interact with your music without
+ever leaving your editor.
+
+==============================================================================
+2. Usage                                                          *SpotifyUsage*
+
+There are a few primary commands that are introduced in spotify.vim:
+
+:Track -- Search Spotify for a track and play that track
+:Album -- Search Spotify for an album and play it
+:Artist -- Search Spotify for an artist and play them
+:NextSong -- Plays the next song on the current playlist
+:Previous -- Restarts the current song or plays the previous song
+on the current playlist
+:PauseUnpause -- Toggles pausing Spotify playback
+
+==============================================================================
+3. Configuration                                                 *SpotifyConfig*
+
+You can tweak the behavior of Spotify by setting a few variables in your :vimrc
+file. For example: >
+
+    let g:spotify_limit = 40
+
+------------------------------------------------------------------------------
+3.1 g:spotify_limit                                              *spotify_limit*
+
+Sets the number of results displayed after a search query
+
+Default: 20
+
+==============================================================================
+4. Contributing                                            *SpotifyContributing*
+
+Think you can make this plugin better? Awesome. Fork it on GitHub and send
+a pull request.
+
+GitHub: http://github.com/gizmo385/spotify.vim
+
+==============================================================================
