@@ -100,8 +100,11 @@ def osascript_command(command, *args):
     shell_command("osascript", "-e", command_string)
 
 def dbus_command(command, *args):
-    shell_command("dbus-send", "--dest=org.mpris.MediaPlayer2.spotify",
-                  "--print-reply", "/org/mpris/MediaPlayer2", command, *args)
+    args = list(args)
+    args.append(">/dev/null")
+    x = shell_command("dbus-send", "--dest=org.mpris.MediaPlayer2.spotify",
+                      "--print-reply", "/org/mpris/MediaPlayer2", command,
+                      *args)
 
 def pause_unpause():
     """Toggles between paused and unpaused"""
