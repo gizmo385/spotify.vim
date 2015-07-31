@@ -17,13 +17,16 @@ PLAY_PAUSE = "playPause"
 commands = {k: None for k in [PLAY_URI, NEXT_SONG, PREVIOUS_SONG, PLAY_PAUSE]}
 
 def _user_input(message, variable_name):
-    input_command = "let {variable_name} = inputdialog('{message}')"
+    try:
+        input_command = "let {variable_name} = inputdialog('{message}')"
 
-    vim.command("call inputsave()")
-    vim.command(input_command.format(message = message, variable_name = variable_name))
-    vim.command("call inputrestore()")
-    vim.command("echo '\n'")
-    return vim.eval(variable_name)
+        vim.command("call inputsave()")
+        vim.command(input_command.format(message = message, variable_name = variable_name))
+        vim.command("call inputrestore()")
+        vim.command("echo '\n'")
+        return vim.eval(variable_name)
+    except:
+        return None
 
 def search_spotify(type="track", limit=20):
     # Get the user's input
@@ -125,6 +128,7 @@ def play_uri(uri):
 if platform == "win32":  # Windows
     print "This plugin requires OSX or Linux!"
     exit(1)
+
 elif platform == "darwin":  # OSX
     commands = {
         PLAY_URI: "play track",
@@ -133,6 +137,7 @@ elif platform == "darwin":  # OSX
         PLAY_PAUSE: "playpause"
     }
     spotify_command = osascript_command
+
 elif platform in ["linux", "linux2"]:  # Linux
     commands = {
         PLAY_URI: "org.mpris.MediaPlayer2.Player.OpenUri",
