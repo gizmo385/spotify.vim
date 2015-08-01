@@ -1,6 +1,5 @@
 import requests
 import vim
-import pprint
 import os
 
 from sys import platform, exit
@@ -71,6 +70,7 @@ def search_spotify(type="track"):
 
     # Play the track
     selected_item = items[item_num]
+    vim.command("redraw!")
     print "Playing %s" % selected_item["name"]
     play_uri('"{item}"'.format(item=selected_item["uri"]))
 
