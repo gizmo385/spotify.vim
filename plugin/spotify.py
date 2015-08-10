@@ -15,17 +15,20 @@ PLAY_PAUSE = "playPause"
 
 commands = {k: None for k in [PLAY_URI, NEXT_SONG, PREVIOUS_SONG, PLAY_PAUSE]}
 
+
 def _user_input(message, variable_name):
     try:
         input_command = "let {variable_name} = inputdialog('{message}')"
 
         vim.command("call inputsave()")
-        vim.command(input_command.format(message = message, variable_name = variable_name))
+        vim.command(input_command.format(message=message,
+                                         variable_name=variable_name))
         vim.command("call inputrestore()")
         vim.command("echo '\n'")
         return vim.eval(variable_name)
     except:
         return None
+
 
 def search_spotify(type="track"):
     # Get the user's input and script settings
@@ -37,10 +40,11 @@ def search_spotify(type="track"):
 
     # Send the request
     request_url = "{url}?query={query}&type={type}&limit={limit}"
-    request_url = request_url.format(url=API_URL, query=query, type=type, limit=limit)
+    request_url = request_url.format(url=SEARCH_API_URL, query=query,
+                                     type=type, limit=limit)
 
     try:
-        response_content = requests.get(request_url, timeout = TIMEOUT).json()
+        response_content = requests.get(request_url, timeout=TIMEOUT).json()
     except requests.exceptions.Timeout as Timeout:
         print "Your query timed out!"
         return
@@ -57,7 +61,8 @@ def search_spotify(type="track"):
         _parse_albums(items)
 
     # Get the selected item
-    item_num = _user_input("Select a {type} number: ".format(type = type), "item_num")
+    item_num = _user_input("Select a {type} number: ".format(type=type),
+                           "item_num")
 
     if not item_num:
         return
@@ -74,30 +79,41 @@ def search_spotify(type="track"):
     print "Playing %s" % selected_item["name"]
     play_uri('"{item}"'.format(item=selected_item["uri"]))
 
+
 def _parse_tracks(tracks):
     for track_number, track in enumerate(tracks):
-        print "%d: %s - %s" % (track_number, track["name"], track["artists"][0]["name"])
+        status = "{number}: {name} - {artist}"
+        artist_name = track["artists"][0]["name"]
+
+        print status.format(number=track_number, name=track["name"],
+                            artist=artist_name)
+
 
 def _parse_artists(artists):
     for artist_number, artist in enumerate(artists):
         print "%d: %s" % (artist_number, artist["name"])
 
+
 def _parse_albums(albums):
     for album_number, album in enumerate(albums):
         print "%d: %s" % (album_number, album["name"])
 
+
 def shell_command(*args):
     return os.system(" ".join(args))
 
+
 def osascript_command(command, *args):
-    command_string = "'tell application \"Spotify\" to {command}".format(command=command)
+    command_string = "'tell application \"Spotify\" to {command}"
+    command_string = command_string.format(command=command)
+
     if args:
-        command_string = "{command_string} {args}'".format(command_string=command_string,
-                                                           args=" ".join(args))
+        command_string += " {args}".format(args="  ".join(args))
     else:
         command_string += "'"
 
     shell_command("osascript", "-e", command_string)
+
 
 def dbus_command(command, *args):
     args = list(args)
@@ -106,17 +122,21 @@ def dbus_command(command, *args):
                       "--print-reply", "/org/mpris/MediaPlayer2", command,
                       *args)
 
+
 def pause_unpause():
     """Toggles between paused and unpaused"""
     spotify_command(commands[PLAY_PAUSE])
+
 
 def next_song():
     """Skips to the next track"""
     spotify_command(commands[NEXT_SONG])
 
+
 def previous_song():
     """Moves to the previous track"""
     spotify_command(commands[PREVIOUS_SONG])
+
 
 def play_uri(uri):
     """Plays the song that with the provided URI"""
@@ -127,6 +147,7 @@ def play_uri(uri):
     else:
         print "Your platform is invalid!"
         exit(1)
+
 
 # Set the commands based on what platform this is running on
 if platform == "win32":  # Windows
