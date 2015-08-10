@@ -4,7 +4,8 @@ import os
 
 from sys import platform, exit
 
-API_URL = "https://api.spotify.com/v1/search"
+# Spotify API Information
+SEARCH_API_URL = "https://api.spotify.com/v1/search"
 TIMEOUT = 10
 
 # Command keys
