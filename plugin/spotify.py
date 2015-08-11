@@ -200,8 +200,32 @@ class DbusAdapter(SpotifyAdapter):
     def __init__(self):
         super(DbusAdapter, self).__init__()
 
-    def current_song():
+    def _send_command(self, command, *args):
+        args = list(args)
+        args.append(">/dev/null")
+        shell_command("dbus-send", "--dest=org.mpris.MediaPlayer2.spotify",
+                        "--print-reply", "/org/mpris/MediaPlayer2", command,
+                        *args)
+
+    def print_current_track(self):
         pass
+
+    def play_uri(self, uri):
+        command = "{command} {uri}"
+        self._send_command(command.format(command=DbusAdapter.PLAY_URI,
+                                          uri=uri))
+        self.print_current_track()
+
+    def next_track(self):
+        self._send_command(DbusAdapter.NEXT_SONG)
+        self.print_current_track()
+
+    def previous_track(self):
+        self._send_command(DbusAdapter.PREVIOUS_SONG)
+        self.print_current_track()
+
+    def pause_unpause(self):
+        self._send_command(DbusAdapter.PLAY_PAUSE)
 
 
 # Set the commands based on what platform this is running on
