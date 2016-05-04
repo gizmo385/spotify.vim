@@ -1,8 +1,14 @@
-import requests
+from __future__ import print_function
 import vim
 import os
 
-from sys import platform, exit
+from sys import platform, exit, stderr
+
+try:
+    import requests
+except ImportError:
+    print("Error: requests module required for spotify.vim", file=stderr)
+
 
 # Spotify API Information
 SEARCH_API_URL = "https://api.spotify.com/v1/search"
@@ -47,7 +53,7 @@ def search_spotify(type="track"):
     try:
         response_content = requests.get(request_url, timeout=TIMEOUT).json()
     except requests.exceptions.Timeout as Timeout:
-        print "Your query timed out!"
+        print("Your query timed out!")
         return
 
     item_key = "{type}s".format(type=type)
@@ -71,13 +77,13 @@ def search_spotify(type="track"):
     try:
         item_num = int(item_num)
     except:
-        print "%s is not a valid selection!" % vim.eval("user_input")
+        print("%s is not a valid selection!" % vim.eval("user_input"))
         return
 
     # Play the track
     selected_item = items[item_num]
     vim.command("redraw!")
-    print "Playing %s" % selected_item["name"]
+    print("Playing %s" % selected_item["name"])
     play_uri('"{item}"'.format(item=selected_item["uri"]))
 
 
@@ -86,18 +92,18 @@ def _parse_tracks(tracks):
         status = "{number}: {name} - {artist}"
         artist_name = track["artists"][0]["name"]
 
-        print status.format(number=track_number, name=track["name"],
-                            artist=artist_name)
+        print(status.format(number=track_number, name=track["name"],
+                            artist=artist_name))
 
 
 def _parse_artists(artists):
     for artist_number, artist in enumerate(artists):
-        print "%d: %s" % (artist_number, artist["name"])
+        print("%d: %s" % (artist_number, artist["name"]))
 
 
 def _parse_albums(albums):
     for album_number, album in enumerate(albums):
-        print "%d: %s" % (album_number, album["name"])
+        print("%d: %s" % (album_number, album["name"]))
 
 
 def shell_command(*args):
@@ -146,13 +152,14 @@ def play_uri(uri):
     elif platform in ["linux", "linux2"]:
         spotify_command(commands[PLAY_URI], "string:%s" % uri)
     else:
-        print "Your platform is invalid!"
+        print("Your platform currently isn't supported by spotify.vim",
+              file=stderr)
         exit(1)
 
 
 # Set the commands based on what platform this is running on
 if platform == "win32":  # Windows
-    print "This plugin requires OSX or Linux!"
+    print("Windows is currently not supported by spotify.vim", file=stderr)
     exit(1)
 
 elif platform == "darwin":  # OSX

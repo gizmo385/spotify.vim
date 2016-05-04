@@ -1,6 +1,6 @@
 " Ensure that dependencies are satisfied
 if !has("python")
-    print "You need Python!"
+    print "You need Python for spotify.vim!"
     finish
 end
 
