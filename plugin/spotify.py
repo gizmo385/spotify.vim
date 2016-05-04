@@ -115,7 +115,7 @@ def osascript_command(command, *args):
     command_string = command_string.format(command=command)
 
     if args:
-        command_string += " {args}".format(args="  ".join(args))
+        command_string += " {args}'".format(args="  ".join(args))
     else:
         command_string += "'"
 
