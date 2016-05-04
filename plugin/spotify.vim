@@ -12,9 +12,9 @@ exe 'pyfile ' . s:plugin_path . '/spotify.py'
 let g:spotify_limit = 20
 
 " Bindings
-command! Track              exec 'python search_spotify(type = "track")'
-command! Album              exec 'python search_spotify(type = "album")'
-command! Artist             exec 'python search_spotify(type = "artist")'
-command! NextSong           exec 'python next_song()'
-command! PreviousSong       exec 'python previous_song()'
-command! PauseUnpause       exec 'python pause_unpause()'
+command! SpotifyTrack              exec 'python search_spotify(type = "track")'
+command! SpotifyAlbum              exec 'python search_spotify(type = "album")'
+command! SpotifyArtist             exec 'python search_spotify(type = "artist")'
+command! SpotifyNextSong           exec 'python next_song()'
+command! SpotifyPreviousSong       exec 'python previous_song()'
+command! SpotifyPauseUnpause       exec 'python pause_unpause()'

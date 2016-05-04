@@ -23,13 +23,13 @@ ever leaving your editor.
 
 There are a few primary commands that are introduced in spotify.vim:
 
-:Track -- Search Spotify for a track and play that track
-:Album -- Search Spotify for an album and play it
-:Artist -- Search Spotify for an artist and play them
-:NextSong -- Plays the next song on the current playlist
-:Previous -- Restarts the current song or plays the previous song
+:SpotifyTrack -- Search Spotify for a track and play that track
+:SpotifyAlbum -- Search Spotify for an album and play it
+:SpotifyArtist -- Search Spotify for an artist and play them
+:SpotifyNextSong -- Plays the next song on the current playlist
+:SpotifyPrevious -- Restarts the current song or plays the previous song
 on the current playlist
-:PauseUnpause -- Toggles pausing Spotify playback
+:SpotifyPauseUnpause -- Toggles pausing Spotify playback
 
 ==============================================================================
 3. Configuration                                                 *SpotifyConfig*
